@@ -1,4 +1,5 @@
-# Seminar: Bayesian Neural Networks  
+# Probabilistic Machine Learning Seminar: 
+## Baysian Neural Networks
 _Repository for Course Code and Projects_
 
 ## 📚 About
