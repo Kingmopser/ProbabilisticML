@@ -1,5 +1,4 @@
 # 🎓 Probabilistic Machine Learning Seminar  
-## **Bayesian Neural Networks with Stochastic Output Layers**
 
 ### 📚 About  
 This repository contains the code and experiments for my seminar thesis in the **Probabilistic Machine Learning** course (SoSe 2025).  
