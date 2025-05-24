@@ -51,3 +51,11 @@ The work focuses on exploring **epistemic uncertainty** in neural networks using
 
 ### 📌 Goal of the Work
 To evaluate whether a simple Bayesian approximation (only in the last layer) is sufficient to capture meaningful uncertainty in predictions — particularly in OOD settings — and to compare its behavior to a fully deterministic ReLU network.
+
+---
+
+### LICENSE
+
+MIT LICENS
+
+
