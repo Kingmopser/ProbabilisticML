@@ -55,7 +55,6 @@ To evaluate whether a simple Bayesian approximation (only in the last layer) is 
 ---
 
 ### LICENSE
-
-MIT LICENS
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
