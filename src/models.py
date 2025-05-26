@@ -134,6 +134,7 @@ def PredNormal(model,x):
     #forward pass
     with torch.no_grad():
         pred = model(x).cpu().numpy()
+        # std = 0 because no epistemic uncertainty, model is confident over all, since determinstic MAP
     return pred.squeeze(),np.zeros_like(pred.squeeze())
 #predicting Last Layer
 def PredLastLayer(base,LastLayer,x, nSamples= 100):
@@ -141,11 +142,10 @@ def PredLastLayer(base,LastLayer,x, nSamples= 100):
     preds = []
     with torch.no_grad():
         feats = base(x)
-        #sampling predicitve mean and variance via MC
+        #predicitive sample-mean (Monte Carlo) and predicted sample-var
         for _ in range(nSamples):
             preds.append(LastLayer(feats).cpu().numpy())
     preds = np.stack(preds)
-    #predicitive mean (Monte Carlo)
     mean = preds.mean(axis=0).squeeze()
     std = preds.std(axis=0).squeeze()
     return mean,std
