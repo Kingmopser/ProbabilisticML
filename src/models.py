@@ -19,10 +19,11 @@ print(f"Using {device} device")
 np.random.seed(123)
 #simulate data
 X_train = np.random.uniform(-4,4,200).reshape(-1,1).astype(np.float32)
-y_train = (X_train**3 + 0.5* np.random.randn(*X_train.shape)).astype(np.float32)
+
+y_train = (X_train**2 + 2*X_train + 0.9* np.random.randn(*X_train.shape)).astype(np.float32)
 
 X_test = np.linspace(-8, 8, 500).reshape(-1, 1).astype(np.float32)
-y_test = np.sin(X_test).astype(np.float32)
+y_test = (X_test**2 + 2*X_test ).astype(np.float32)
 
 tenX = torch.from_numpy(X_train).to(device)
 tenY = torch.from_numpy(y_train).to(device)
@@ -157,7 +158,7 @@ mapNN = GetNeuralNetwork()
 TrainNN(mapNN, trainLoader, epochs=600)
 mean_map, std_map = PredNormal(mapNN, tenXTest)
 plt.figure(figsize=(10,5))
-plt.plot(X_test, X_test**3, 'g-', label='True')
+plt.plot(X_test, y_test, 'g-', label='True')
 plt.show()
 plt.plot(X_test, mean_map, 'b--', label='MAP NN Mean')
 plt.show()
@@ -166,18 +167,30 @@ plt.show()
 base = BaseNetwork().to(device)
 head = nn.Linear(16,1).to(device)
 baseMod = nn.Sequential(base,head)
-TrainNN(baseMod,trainLoader,100)
+TrainNN(baseMod,trainLoader,600)
 # freezing base weights
 for p in baseMod.parameters():
     p.requires_grad = False
 lastLayer = BayesianLastLayer(16).to(device)
-TrainLastLayer(base,lastLayer,trainLoader,epochs=20)
+TrainLastLayer(base,lastLayer,trainLoader,epochs=200)
 meanB, stdB = PredLastLayer(base,lastLayer,tenXTest)
 
 plt.figure(figsize=(10,5))
-plt.plot(X_test, X_test**3, 'g-', label='True')
+plt.plot(X_test,y_test, 'g-', label='True')
 plt.show()
-plt.plot(X_test, meanB, 'b--', label='MAP NN Mean')
+# epistemic uncertainty
+plt.plot(X_test, stdB, 'b--', label='MAP NN Mean')
 plt.show()
+
+mapUnID = std_map[InDist.squeeze()]
+mapUnOOD = std_map[~InDist.squeeze()]
+
+bllUnID = stdB[InDist.squeeze()]
+bllUnOOD = stdB[~InDist.squeeze()]
+
+print(f"MAP NN: In-dist uncertainty = {mapUnID.mean():.4f}, OOD uncertainty = {mapUnOOD.mean():.4f}")
+print(f"Bayesian Last Layer: In-dist uncertainty = {bllUnID.mean():.4f}, OOD uncertainty = {bllUnOOD.mean():.4f}")
+
+
 
 
