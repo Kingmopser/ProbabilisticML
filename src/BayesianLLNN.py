@@ -86,7 +86,7 @@ def TrainLastLayer(base,lastLayer,loader,epochs=1000):
             optimizer.step()
     return lastLayer
 
-    # predicting Last Layer
+ # predicting Last Layer
 
 
 def PredLastLayer(base, LastLayer, x, nSamples=100):
@@ -103,6 +103,9 @@ def PredLastLayer(base, LastLayer, x, nSamples=100):
     return mean, std
 
 #CLASSIFICATION
+
+
+
 
 
 
