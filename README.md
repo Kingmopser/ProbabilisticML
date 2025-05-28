@@ -42,7 +42,7 @@ The work focuses on exploring **epistemic uncertainty** in neural networks using
 ---
 
 ### 📊 Datasets Used
-- **Synthetic (toy) classification dataset** — for visualizing predictive uncertainty  
+- **Synthetic (toy) regression dataset** — for visualizing predictive uncertainty  
 - **Real-world dataset** 
   - In-distribution: known label classes  
   - OOD: unrelated or random inputs for uncertainty evaluation
