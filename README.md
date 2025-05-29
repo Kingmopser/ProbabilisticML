@@ -44,7 +44,7 @@ The work focuses on exploring **epistemic uncertainty** in neural networks using
 ### 📊 Datasets Used
 - **Synthetic (toy) regression dataset** — for visualizing predictive uncertainty  
 - **Real-world dataset**
-  - Diabetes Diagnosis: available[KAGGLE](https://www.kaggle.com/datasets/marshalpatel3558/diabetes-prediction-dataset-legit-dataset)
+  - Diabetes Diagnosis: available at [Kaggle](https://www.kaggle.com/datasets/marshalpatel3558/diabetes-prediction-dataset-legit-dataset)
   - In-distribution: known label classes  
   - OOD: unrelated or random inputs for uncertainty evaluation
 
