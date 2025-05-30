@@ -9,7 +9,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
-
+from sklearn.metrics import accuracy_score
 
 from ucimlrepo import fetch_ucirepo ,list_available_datasets
 
@@ -31,7 +31,7 @@ def GetNeuralNetwork():
 
 #training MAP NN:
 def TrainNN(model,loader,epochs=1000):
-    optimizer = optim.Adam(model.parameters(),lr=5e-3)
+    optimizer = optim.Adam(model.parameters(),lr=1e-3)
     for epoch in range(epochs):
         for x,y in loader:
             model.train()
@@ -40,20 +40,22 @@ def TrainNN(model,loader,epochs=1000):
             loss = F.mse_loss(pred,y)
             loss.backward()
             optimizer.step()
-
+        if epoch % 20 == 0:
+            print(
+                f"Epoch: {epoch} | Loss: {loss:.5f}")
     return model
 
 #predicting NN:
 def PredNormal(model,x):
     model.eval()
     #forward pass
-    with torch.no_grad():
+    with torch.inference_mode():
         pred = model(x).cpu().numpy()
         # std = 0 because no epistemic uncertainty, model is confident over all, since determinstic MAP
     return pred.squeeze(),np.zeros_like(pred.squeeze())
 
 #CLASSIFICATION
-def GetNeuralNetworkClassification(input_dim: int, num_classes: int, device="cpu"):
+def GetNeuralNetworkClassification(input_dim: int, num_classes: int):
     return nn.Sequential(
         nn.Linear(input_dim, 32),
         nn.ReLU(),
@@ -63,19 +65,31 @@ def GetNeuralNetworkClassification(input_dim: int, num_classes: int, device="cpu
         nn.ReLU(),
         nn.Linear(32, 16),
         nn.ReLU(),
-        nn.Linear(32, num_classes),# Logits
+        nn.Linear(16, num_classes),# Logits
         #keine softmax, weil crossentropyLoss softmax inkludiert
     ).to(device)
 
 def TrainNNClass(model,loader,epochs=1000):
-    optimizer = optim.Adam(model.parameters(), lr=5e-3)
-
-
+    optimizer = optim.Adam(model.parameters(), lr=1e-3)
+    for epoch in range(epochs):
+        for x,y in loader:
+            model.train()
+            optimizer.zero_grad()
+            logits = model(x)
+            loss = F.cross_entropy(logits,y)
+            loss.backward()
+            optimizer.step()
+        if epoch % 10 == 0:
+            print(
+                f"Epoch: {epoch} | Loss: {loss:.5f}")
+    return model
 def PredictClass(model,x):
-    None
+    model.eval()
+    with torch.inference_mode():
+        logits = model(x)
+        preds= torch.softmax(logits, 1).argmax(dim=1).cpu().numpy()
 
-
-list_available_datasets()
+    return preds.squeeze()
 
 
 
