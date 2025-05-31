@@ -14,10 +14,10 @@ import torch.nn.functional as F
 
 # Partial stochastic NN: MAP estimated deterministic L-1 Layers and Bayesian Last Layer
 class BaseNetwork(nn.Module):
-    def __init__(self):
+    def __init__(self, n_in):
         super().__init__()
         self.head = nn.Sequential(
-            nn.Linear(1,32),
+            nn.Linear(n_in,32),
             nn.ReLU(),
             nn.Linear(32, 32),
             nn.ReLU(),
@@ -31,12 +31,12 @@ class BaseNetwork(nn.Module):
 
 #Bayesian Last Layer definition using V.I "bayesian by backprop"
 class BayesianLastLayer(nn.Module):
-    def __init__(self,in_features,prior_sigma=1.0):
+    def __init__(self,in_features,out_features,prior_sigma=1.0):
         super().__init__()
-        self.wMu = nn.Parameter(torch.zeros(in_features, 1))
-        self.wLogVar = nn.Parameter(torch.full((in_features, 1), -5.0))
+        self.wMu = nn.Parameter(torch.zeros(in_features, out_features))
+        self.wLogVar = nn.Parameter(torch.full((in_features, out_features), -5.0))
         self.bMu = nn.Parameter(torch.zeros(1))
-        self.bLogVar = nn.Parameter(torch.full((1,), -5.0))
+        self.bLogVar = nn.Parameter(torch.full((out_features,), -5.0))
         self.priorSigma = prior_sigma
 
     def forward(self,x):
@@ -46,7 +46,7 @@ class BayesianLastLayer(nn.Module):
         #sampling weights and bias: reparametrization trick
         w = self.wMu + wStd * torch.randn_like(self.wMu)
         b = self.bMu + bStd * torch.randn_like(self.bMu)
-        # linear layer (bayesian GLM with gaussian prior, L2 reg)
+        # linear layer (bayesian GLM with gaussian prior)
         return  x @ w + b
 
     def kl_term(self,mu,logvar):
@@ -104,6 +104,40 @@ def PredLastLayer(base, LastLayer, x, nSamples=100):
 
 #CLASSIFICATION
 
+def TrainLastLayerCL(base,lastLayer,loader,epochs=1000):
+    optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3)
+    # autograd shouldn't touch the MAP trained weights, so set False to avoid optimizing
+    for p in base.parameters():
+        p.requires_grad = False
+    N = len(loader.dataset)
+    for epoch in range(epochs):
+        for x,y in loader:
+            optimizer.zero_grad()
+            features = base(x)
+            pred = lastLayer(features)
+            #we are maximizing ELBO
+            #neg log lik
+            ce = F.cross_entropy(pred,y)
+            kl = lastLayer.kl_div() / N
+            loss = ce + kl
+            loss.backward()
+            optimizer.step()
+    return lastLayer
+
+
+def PredLastLayerCl(base, lastLayer, x, nSamples=100):
+    base.eval()
+    preds = []
+    with torch.no_grad():
+        feats = base(x)
+        # predicitive sample-mean (Monte Carlo) and predicted sample-var
+        for _ in range(nSamples):
+            logits = lastLayer(feats)
+            preds.append(F.softmax(logits,dim=1).cpu().numpy())
+    preds = np.stack(preds)
+    mean_prob = preds.mean(axis=0)
+    entropy = (-1)*np.sum(mean_prob*np.log(mean_prob + 1e-9),axis=1)
+    return mean_prob, entropy
 
 
 
