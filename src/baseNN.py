@@ -57,13 +57,9 @@ def PredNormal(model,x):
 #CLASSIFICATION
 def GetNeuralNetworkClassification(input_dim: int, num_classes: int):
     return nn.Sequential(
-        nn.Linear(input_dim, 32),
+        nn.Linear(input_dim, 16),
         nn.ReLU(),
-        nn.Linear(32, 32),
-        nn.ReLU(),
-        nn.Linear(32, 32),
-        nn.ReLU(),
-        nn.Linear(32, 16),
+        nn.Linear(16, 16),
         nn.ReLU(),
         nn.Linear(16, num_classes),# Logits
         #keine softmax, weil crossentropyLoss softmax inkludiert

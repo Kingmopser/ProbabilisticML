@@ -17,13 +17,9 @@ class BaseNetwork(nn.Module):
     def __init__(self, n_in):
         super().__init__()
         self.head = nn.Sequential(
-            nn.Linear(n_in,32),
+            nn.Linear(n_in,8),
             nn.ReLU(),
-            nn.Linear(32, 32),
-            nn.ReLU(),
-            nn.Linear(32, 32),
-            nn.ReLU(),
-            nn.Linear(32, 16),
+            nn.Linear(8, 8),
         )
     def forward(self,x):
         return self.head(x)
@@ -67,7 +63,7 @@ class BayesianLastLayer(nn.Module):
 #JOINT TRAINING (Do bayesian Networks need to be fully stochastic)
 #training last layer
 def TrainLastLayer(base,lastLayer,loader,epochs=1000):
-    optimizer= optim.Adam(lastLayer.parameters(),lr=5e-3)
+    optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3, weight_decay=1e-4)
     # autograd shouldn't touch the MAP trained weights, so set False to avoid optimizing
     for p in base.parameters():
         p.requires_grad = False
@@ -105,7 +101,7 @@ def PredLastLayer(base, LastLayer, x, nSamples=100):
 #CLASSIFICATION
 
 def TrainLastLayerCL(base,lastLayer,loader,epochs=1000):
-    optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3)
+    optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3,weight_decay=1e-4)
     # autograd shouldn't touch the MAP trained weights, so set False to avoid optimizing
     for p in base.parameters():
         p.requires_grad = False
