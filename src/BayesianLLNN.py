@@ -27,7 +27,7 @@ class BaseNetwork(nn.Module):
 
 #Bayesian Last Layer definition using V.I "bayesian by backprop"
 class BayesianLastLayer(nn.Module):
-    def __init__(self,in_features,out_features,prior_sigma=1.0):
+    def __init__(self,in_features,out_features,prior_sigma=0.5):
         super().__init__()
         self.wMu = nn.Parameter(torch.zeros(in_features, out_features))
         self.wLogVar = nn.Parameter(torch.full((in_features, out_features), -5.0))
@@ -132,8 +132,14 @@ def PredLastLayerCl(base, lastLayer, x, nSamples=100):
             preds.append(F.softmax(logits,dim=1).cpu().numpy())
     preds = np.stack(preds)
     mean_prob = preds.mean(axis=0)
+    #Bayesian Agents: Attempt to UQ, Lisa Wimmers Slides
+    #predictive entropy(Total Uncertainty)
     entropy = (-1)*np.sum(mean_prob*np.log(mean_prob + 1e-9),axis=1)
-    return mean_prob, entropy
+    #Expected_entropy(aleatoric)
+    exp_entropy= -np.mean(np.sum(preds * np.log(preds + 1e-9), axis=2), axis=0)
+    mutual_info = entropy - exp_entropy
+    # mutual info(epistemic uncertainty)
+    return mean_prob, entropy, exp_entropy, mutual_info
 
 
 

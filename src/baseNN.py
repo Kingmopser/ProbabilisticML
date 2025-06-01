@@ -83,9 +83,10 @@ def PredictClass(model,x):
     model.eval()
     with torch.inference_mode():
         logits = model(x)
-        preds= torch.softmax(logits, 1).argmax(dim=1).cpu().numpy()
-
-    return preds.squeeze()
+        probs= torch.softmax(logits, 1).cpu().numpy()
+        # not the same, this is only aleatoric UC
+        entropy = (-1) * np.sum(probs * np.log(probs + 1e-9), axis=1)
+    return probs, entropy
 
 
 
