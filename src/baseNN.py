@@ -15,7 +15,7 @@ from ucimlrepo import fetch_ucirepo ,list_available_datasets
 
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 #REGRESSION
-#Standard NN, no need for extra Class since its a standard NN
+#Standard NN, no need for extra Class since it's a standard NN
 def GetNeuralNetwork():
     return nn.Sequential(
         nn.Linear(1,32),
@@ -57,11 +57,11 @@ def PredNormal(model,x):
 #CLASSIFICATION
 def GetNeuralNetworkClassification(input_dim: int, num_classes: int):
     return nn.Sequential(
-        nn.Linear(input_dim, 16),
+        nn.Linear(input_dim, 4),
         nn.ReLU(),
-        nn.Linear(16, 16),
+        nn.Linear(4, 4),
         nn.ReLU(),
-        nn.Linear(16, num_classes),# Logits
+        nn.Linear(4, num_classes),# Logits
         #keine softmax, weil crossentropyLoss softmax inkludiert
     ).to(device)
 

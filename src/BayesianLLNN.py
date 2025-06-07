@@ -17,9 +17,9 @@ class BaseNetwork(nn.Module):
     def __init__(self, n_in):
         super().__init__()
         self.head = nn.Sequential(
-            nn.Linear(n_in,8),
+            nn.Linear(n_in,32),
             nn.ReLU(),
-            nn.Linear(8, 8),
+            nn.Linear(32, 32),
         )
     def forward(self,x):
         return self.head(x)
@@ -27,12 +27,12 @@ class BaseNetwork(nn.Module):
 
 #Bayesian Last Layer definition using V.I "bayesian by backprop"
 class BayesianLastLayer(nn.Module):
-    def __init__(self,in_features,out_features,prior_sigma=0.5):
+    def __init__(self,in_features,out_features,prior_sigma=1):
         super().__init__()
         self.wMu = nn.Parameter(torch.zeros(in_features, out_features))
-        self.wLogVar = nn.Parameter(torch.full((in_features, out_features), -5.0))
+        self.wLogVar = nn.Parameter(torch.full((in_features, out_features), -1.0))
         self.bMu = nn.Parameter(torch.zeros(1))
-        self.bLogVar = nn.Parameter(torch.full((out_features,), -5.0))
+        self.bLogVar = nn.Parameter(torch.full((out_features,), -1.0))
         self.priorSigma = prior_sigma
 
     def forward(self,x):
@@ -63,7 +63,7 @@ class BayesianLastLayer(nn.Module):
 #JOINT TRAINING (Do bayesian Networks need to be fully stochastic)
 #training last layer
 def TrainLastLayer(base,lastLayer,loader,epochs=1000):
-    optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3, weight_decay=1e-4)
+    optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3)
     # autograd shouldn't touch the MAP trained weights, so set False to avoid optimizing
     for p in base.parameters():
         p.requires_grad = False
@@ -101,7 +101,7 @@ def PredLastLayer(base, LastLayer, x, nSamples=100):
 #CLASSIFICATION
 
 def TrainLastLayerCL(base,lastLayer,loader,epochs=1000):
-    optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3,weight_decay=1e-4)
+    optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3)
     # autograd shouldn't touch the MAP trained weights, so set False to avoid optimizing
     for p in base.parameters():
         p.requires_grad = False
