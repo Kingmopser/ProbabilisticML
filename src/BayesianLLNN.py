@@ -19,7 +19,9 @@ class BaseNetwork(nn.Module):
         self.head = nn.Sequential(
             nn.Linear(n_in,32),
             nn.ReLU(),
-            nn.Linear(32, 32),
+            nn.Linear(32,32),
+            nn.ReLU(),
+            nn.Linear(32, 16),
         )
     def forward(self,x):
         return self.head(x)
@@ -27,12 +29,12 @@ class BaseNetwork(nn.Module):
 
 #Bayesian Last Layer definition using V.I "bayesian by backprop"
 class BayesianLastLayer(nn.Module):
-    def __init__(self,in_features,out_features,prior_sigma=1):
+    def __init__(self,in_features,out_features,logvals,prior_sigma=1.0):
         super().__init__()
         self.wMu = nn.Parameter(torch.zeros(in_features, out_features))
-        self.wLogVar = nn.Parameter(torch.full((in_features, out_features), -1.0))
+        self.wLogVar = nn.Parameter(torch.full((in_features, out_features), logvals))
         self.bMu = nn.Parameter(torch.zeros(1))
-        self.bLogVar = nn.Parameter(torch.full((out_features,), -1.0))
+        self.bLogVar = nn.Parameter(torch.full((out_features,), logvals))
         self.priorSigma = prior_sigma
 
     def forward(self,x):
@@ -99,6 +101,19 @@ def PredLastLayer(base, LastLayer, x, nSamples=100):
     return mean, std
 
 #CLASSIFICATION
+
+# Partial stochastic NN: MAP estimated deterministic L-1 Layers and Bayesian Last Layer
+class BaseNetworkCL(nn.Module):
+    def __init__(self, n_in):
+        super().__init__()
+        self.head = nn.Sequential(
+            nn.Linear(n_in,8),
+            nn.ReLU(),
+            nn.Linear(8, 4),
+        )
+    def forward(self,x):
+        return self.head(x)
+
 
 def TrainLastLayerCL(base,lastLayer,loader,epochs=1000):
     optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3)
