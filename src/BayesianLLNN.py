@@ -33,7 +33,7 @@ class BayesianLastLayer(nn.Module):
         super().__init__()
         self.wMu = nn.Parameter(torch.zeros(in_features, out_features))
         self.wLogVar = nn.Parameter(torch.full((in_features, out_features), logvals))
-        self.bMu = nn.Parameter(torch.zeros(1))
+        self.bMu = nn.Parameter(torch.zeros(out_features))
         self.bLogVar = nn.Parameter(torch.full((out_features,), logvals))
         self.priorSigma = prior_sigma
 
@@ -78,7 +78,7 @@ def TrainLastLayer(base,lastLayer,loader,epochs=1000):
             #we are maximizing ELBO
             #neg log lik
             mse = F.mse_loss(pred,y)
-            kl = lastLayer.kl_div() / N
+            kl = (lastLayer.kl_div() / N)
             loss = mse + kl
             loss.backward()
             optimizer.step()
@@ -115,8 +115,8 @@ class BaseNetworkCL(nn.Module):
         return self.head(x)
 
 
-def TrainLastLayerCL(base,lastLayer,loader,epochs=1000):
-    optimizer= optim.Adam(lastLayer.parameters(),lr=1e-3)
+def TrainLastLayerCL(base,lastLayer,loader,beta=1.0,class_weights = None,learningrate= 1e-3,epochs=1000):
+    optimizer= optim.Adam(lastLayer.parameters(),lr=learningrate)
     # autograd shouldn't touch the MAP trained weights, so set False to avoid optimizing
     for p in base.parameters():
         p.requires_grad = False
@@ -127,24 +127,25 @@ def TrainLastLayerCL(base,lastLayer,loader,epochs=1000):
             features = base(x)
             pred = lastLayer(features)
             #we are maximizing ELBO
-            #neg log lik
+            #neg log
             ce = F.cross_entropy(pred,y)
-            kl = lastLayer.kl_div() / N
+            kl = beta*( lastLayer.kl_div() /N)
             loss = ce + kl
             loss.backward()
             optimizer.step()
     return lastLayer
 
 
-def PredLastLayerCl(base, lastLayer, x, nSamples=100):
+def PredLastLayerCl(base,lastLayer, x, nSamples=100, t=1 ):
     base.eval()
     preds = []
     with torch.no_grad():
         feats = base(x)
         # predicitive sample-mean (Monte Carlo) and predicted sample-var
+        # Temperature Scaling because Logits saturate very quickly
         for _ in range(nSamples):
             logits = lastLayer(feats)
-            preds.append(F.softmax(logits,dim=1).cpu().numpy())
+            preds.append(F.softmax(logits/t,dim=1).cpu().numpy())
     preds = np.stack(preds)
     mean_prob = preds.mean(axis=0)
     #Bayesian Agents: Attempt to UQ, Lisa Wimmers Slides
@@ -152,9 +153,10 @@ def PredLastLayerCl(base, lastLayer, x, nSamples=100):
     entropy = (-1)*np.sum(mean_prob*np.log(mean_prob + 1e-9),axis=1)
     #Expected_entropy(aleatoric)
     exp_entropy= -np.mean(np.sum(preds * np.log(preds + 1e-9), axis=2), axis=0)
-    mutual_info = entropy - exp_entropy
     # mutual info(epistemic uncertainty)
-    return mean_prob, entropy, exp_entropy, mutual_info
+    mutual_info = entropy - exp_entropy
+    energy = -torch.logsumexp(logits, dim=1).cpu().numpy()
+    return mean_prob, entropy, exp_entropy, mutual_info,energy
 
 
 
