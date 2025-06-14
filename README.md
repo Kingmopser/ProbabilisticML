@@ -22,17 +22,16 @@ The work focuses on exploring **epistemic uncertainty** in neural networks using
 ### 📁 Project Structure
 
 - `src/` – Jupyter notebooks for experiments and visualizations  
-  - `simulation_study.ipynb` – 1D toy regression to visualize predictive uncertainty  
-  - `real_data_experiment.ipynb` – Evaluation on real-world data 
-
-- `models/` – Model definitions  
-  - `deterministic_nn.py` – Standard ReLU neural network  
-  - `bayesian_last_layer.py` – Neural Linear Model (Bayesian output layer)
-
-- `utils/` – Helper functions  
-  - `uncertainty_metrics.py` – Entropy, calibration error, etc.  
-  - `data_loader.py` – Data preprocessing and loading
-
+  - `Simulation.ipynb` – 1D toy regression to visualize predictive uncertainty  
+  - `RealData.ipynb` – Evaluation on real-world data 
+  - `BayesianLLNN.py` - Implementation of Bayesian Last Layer
+  - `baseNN.py` - base deterministic NN
+   
+- `models/` – Models 
+  - `baseBayes.pth` – base Neural Network for Classfication
+  - `basenn.pth` - Standard ReLU neural network  
+  - `best_lastlayer.pth` - – Neural Linear Model (Bayesian output layer)
+  
 - `results/` – Generated plots and saved evaluation results
 
 - `requirements.txt` – Python dependencies
