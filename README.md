@@ -31,6 +31,9 @@ The work focuses on exploring **epistemic uncertainty** in neural networks using
   - `baseBayes.pth` – base Neural Network for Classfication
   - `basenn.pth` - Standard ReLU neural network  
   - `best_lastlayer.pth` - – Neural Linear Model (Bayesian output layer)
+
+- `Data/` – Data
+  - `Dataset of Diabetes.csv` - Dataset in csv format
   
 - `results/` – Generated plots and saved evaluation results
 
