@@ -2,7 +2,7 @@
 
 ### 📚 About  
 This repository contains the code and experiments for my seminar thesis in the **Probabilistic Machine Learning** course (SoSe 2025).  
-The work focuses on exploring ** uncertainty** in neural networks using **partial Bayesian neural networks**, with a particular emphasis on:
+The work focuses on exploring **uncertainty** in neural networks using **partial Bayesian neural networks**, with a particular emphasis on:
 
 - **Bayesian last-layer** (Neural Linear Approximations)  
 - Comparison to fully deterministic neural networks  
