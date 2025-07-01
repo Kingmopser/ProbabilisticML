@@ -1,18 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-
-from sklearn import datasets
-
-from torch.utils.data import DataLoader, TensorDataset
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
-from sklearn.metrics import accuracy_score
-
-from ucimlrepo import fetch_ucirepo ,list_available_datasets
-
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 #REGRESSION
 #Standard NN, no need for extra Class since it's a standard NN

@@ -1,10 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-
-from sklearn import datasets
-
-from torch.utils.data import DataLoader, TensorDataset
 import torch
 import torch.nn as nn
 import torch.optim as optim
