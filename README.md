@@ -45,26 +45,30 @@ The work focuses on exploring **epistemic uncertainty** in neural networks using
 ### To set up the project environment and reproduce the results, follow these steps:
 
 1. **Clone the repository**
-
+```
   bash:
   git clone https://github.com/yourusername/probabilistic-seminar.git
   cd probabilistic-seminar
-
+```
 2. **create virtual environment**
-  
+```
   # on Mac os:
   python -m venv venv
-  source venv/bin/activate  
+  source venv/bin/activate
+
   # on Windows: 
   venv\Scripts\activate
-
+```  
 3. **install dependencies**
-
+```
   pip install -r requirements.txt
+```
 
 4. **Run experiments**
+   
   For simluation study:
     Open and run src/Simulation.ipynb
+  
   For real-world classification:
     Open and run src/RealData.ipynb
 
