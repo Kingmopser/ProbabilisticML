@@ -1,5 +1,12 @@
 # 🎓 Probabilistic Machine Learning Seminar  
 
+![Status](https://img.shields.io/badge/status-in%20progress-yellow)
+![Python](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue)
+![License](https://img.shields.io/badge/license-restricted-red)
+![Notebook](https://img.shields.io/badge/jupyter-notebook-orange)
+![Project](https://img.shields.io/badge/academic-project-lightgrey)
+
+
 ### 📚 About  
 This repository contains the code and experiments for my seminar thesis in the **Probabilistic Machine Learning** course (SoSe 2025).  
 The work focuses on exploring **uncertainty** in neural networks using **partial Bayesian neural networks**, with a particular emphasis on:
