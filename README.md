@@ -74,10 +74,10 @@ The work focuses on exploring **uncertainty** in neural networks using **partial
 4. **Run experiments**
    
   For simluation study:
-    Open and run src/Simulation.ipynb
+    Open and run ```src/Simulation.ipynb```
   
   For real-world classification:
-    Open and run src/RealData.ipynb
+    Open and run ```src/RealData.ipynb```
 
 
 ### 📊 Datasets Used
