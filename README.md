@@ -1,4 +1,4 @@
-# 🎓 Probabilistic Machine Learning Seminar  
+#  Probabilistic Machine Learning Seminar  
 
 ![Status](https://img.shields.io/badge/status-in%20progress-yellow)
 ![Python](https://img.shields.io/badge/python-3.9%20-blue)
@@ -6,7 +6,7 @@
 ![Notebook](https://img.shields.io/badge/jupyter-notebook-orange)
 
 
-### 📚 About  
+###  About  
 This repository contains the code and experiments for my seminar thesis in the **Probabilistic Machine Learning** course (SoSe 2025).  
 The work focuses on exploring **uncertainty** in neural networks using **partial Bayesian neural networks**, with a particular emphasis on:
 
@@ -16,7 +16,7 @@ The work focuses on exploring **uncertainty** in neural networks using **partial
 
 ---
 
-### 🛠️ Core Topics
+###  Core Topics
 - Probabilistic modeling in neural networks  
 - Bayesian linear regression as output layer  
 - Predictive entropy and epistemic uncertainty  
@@ -25,7 +25,7 @@ The work focuses on exploring **uncertainty** in neural networks using **partial
 
 ---
 
-### 📁 Project Structure
+###  Project Structure
 
 - `src/` – Jupyter notebooks for experiments and visualizations  
   - `Simulation.ipynb` – 1D toy regression to visualize predictive uncertainty  
@@ -79,7 +79,7 @@ The work focuses on exploring **uncertainty** in neural networks using **partial
     Open and run ```src/RealData.ipynb```
 
 
-### 📊 Datasets Used
+###  Datasets Used
 - **Synthetic (toy) regression dataset** — for visualizing predictive uncertainty  
 - **Real-world dataset**
   - Diabetes Diagnosis: available at [Kaggle](https://www.kaggle.com/datasets/marshalpatel3558/diabetes-prediction-dataset-legit-dataset)
@@ -88,7 +88,7 @@ The work focuses on exploring **uncertainty** in neural networks using **partial
 
 ---
 
-### 📌 Goal of the Work
+###  Goal of the Work
 To evaluate whether a simple Bayesian approximation (only in the last layer) is sufficient to capture meaningful uncertainty in predictions — particularly in OOD settings — and to compare its behavior to a fully deterministic ReLU network.
 
 ---
