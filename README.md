@@ -1,6 +1,5 @@
 #  Probabilistic Machine Learning Seminar  
-
-![Status](https://img.shields.io/badge/status%20completed-green)
+![Status](https://img.shields.io/badge/%20completed-green)
 ![Python](https://img.shields.io/badge/python-3.11%20-blue)
 ![License](https://img.shields.io/badge/license-restricted-red)
 ![Notebook](https://img.shields.io/badge/jupyter-notebook-orange)
